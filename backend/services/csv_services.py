@@ -32,15 +32,53 @@ def get_feature_summary(dataframe):
         "boolean_like": boolean_like
     }
 
+def detect_identifier_columns(dataframe):
+    """
+    Detect identifier columns that should not be used
+    for machine learning.
+    """
 
+    identifier_keywords = [
+        "id",
+        "index",
+        "row",
+        "customer",
+        "user",
+        "employee",
+        "student",
+        "transaction",
+        "invoice",
+        "product",
+        "order"
+    ]
+
+    identifier_columns = []
+
+    for column in dataframe.columns:
+
+        column_name = column.lower()
+
+        for keyword in identifier_keywords:
+
+            if keyword in column_name:
+                identifier_columns.append(column)
+                break
+
+        # Check if every value is unique
+        if dataframe[column].nunique() == len(dataframe):
+            if column not in identifier_columns:
+                identifier_columns.append(column)
+
+    return identifier_columns
 
 def get_dataset_summary(dataframe):
     """
     Returns basic information about the dataset.
     """
     feature_summary = get_feature_summary(dataframe)
+    identifier_columns = detect_identifier_columns(dataframe)
     summary = {
-        
+        "identifier_columns": identifier_columns,
         "rows": len(dataframe),
         "columns": len(dataframe.columns),
 
