@@ -3,6 +3,7 @@ import pandas as pd
 from backend.agents.base_agent import BaseAgent
 from backend.logger import logger
 from backend.models.pipeline_state import PipelineState
+from backend.services.mlflow_service import log_agent_metadata
 
 from backend.services.dataset_understanding import (
     detect_identifier_columns,
@@ -66,6 +67,21 @@ class DatasetAgent(BaseAgent):
         state.status = "running"
 
         state.executed_agents.append("DatasetAgent")
+        
+        log_agent_metadata(
+    "DatasetAgent",
+    {
+        "target_column": target_column,
+        "problem_type": problem_type,
+        "identifier_columns": identifier_columns,
+        "datetime_columns": datetime_columns,
+        "text_columns": text_columns,
+        "constant_columns": constant_columns,
+        "high_cardinality_columns": high_cardinality_columns,
+        "dataset_problems": dataset_problems,
+    },
+)
+
 
         logger.info("Dataset Agent Completed")
 

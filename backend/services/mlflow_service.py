@@ -43,6 +43,22 @@ def log_pipeline_info(
     mlflow.log_param("dataset_name", dataset_name)
     mlflow.log_param("rows", rows)
     mlflow.log_param("columns", columns)
+    
+def log_agent_metadata(agent_name: str, metadata: dict):
+    for key, value in metadata.items():
+        if value is None:
+            continue
+
+        if isinstance(value, (str, int, float, bool)):
+            mlflow.log_param(
+                f"{agent_name}_{key}",
+                value,
+            )
+        else:
+            mlflow.log_param(
+                f"{agent_name}_{key}",
+                str(value),
+            )
 
 
 def end_mlflow_run():

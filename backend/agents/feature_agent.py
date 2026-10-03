@@ -1,5 +1,6 @@
 from backend.models.pipeline_state import PipelineState
 from backend.logger import logger
+from backend.services.mlflow_service import log_agent_metadata
 
 from backend.services.feature_engineering import (
     extract_date_features,
@@ -202,10 +203,27 @@ class FeatureAgent:
 
             "target_column": target_column,
         }
+        
+        log_agent_metadata(
+            "FeatureAgent",
+            {
+                "removed_columns": columns_to_remove,
+                "date_features_created": created_date_features,
+                "generated_feature_count": len(feature_df.columns),
+                "interaction_features": interaction_features,
+                "selected_feature_count": len(selected_features),
+                "selection_removed_features": removed_features,
+                "drop_suggestions": drop_suggestions,
+                "create_suggestions": create_suggestions,
+                "target_column": target_column,
+            },
+        )
 
         state.executed_agents.append(
             "FeatureAgent"
         )
+        
+   
 
         state.status = "completed"
 

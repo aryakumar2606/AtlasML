@@ -24,6 +24,7 @@ from backend.services.mlflow_service import (
     start_mlflow_run,
     log_pipeline_info,
     log_metric,
+    log_agent_metadata,
     end_mlflow_run,
 )
 
